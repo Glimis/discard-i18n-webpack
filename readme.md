@@ -2,7 +2,7 @@
 通过webpack的方式,调用i18n抽取中文,并进行转换
 
 ```javascript
-new HtmlWebpackBodyPlugin({
+new I18nWebpack({
     //扫描文件地址
     dist:path.join(__dirname,'../dist'),
     //源码
