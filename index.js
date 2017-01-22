@@ -67,21 +67,36 @@ Plugin.prototype.apply = function(compiler) {
                      var ps=   k.split('.') ;
                         ps[ps.length]=ps[ps.length-1];
                         ps[ps.length-2]="en";
-                       
+                    var text=i18n.createLocalFileByHtml(asset.source(),self.dit,function(v){
+                        if(self.dit[v]){
+                            return self.dit[v].replace(/["']/g,function(v){return "\\"+v});
+                        }else{
+                            return v;    
+                        }
+                    });
+                    text=text.replace(/src="index.js"/,function(){
+                        return 'src="index.en.js"'
+                    })
+ 
+                    text=text.replace(/src="..\/common.js"/,function(){
+                        return 'src="../common.en.js"'
+                    })
+
                     return {
                         fileName:ps.join('.'),
-                        html:asset.source()
-                    };
+                        html:text
+                    }
                 }
             }))
+
          
             _.each(files,function(data){
                 compilation.assets[data.fileName] = {
                   source: function() {
-                    return i18n.createLocalFileByHtml(data.html,self.dit);
+                    return data.html
                   },
                   size:function(){
-                    return 10
+                    return data.html.length
                   }
                }
             })
