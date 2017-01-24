@@ -111,7 +111,7 @@ Plugin.prototype.apply = function(compiler) {
                         })
                     }
                     if(be=="js"){
-                        text=text.replace(/window.location.href.*\.html/,function(v){
+                        text=text.replace(/window.location.href.*\.html/g,function(v){
                             return v.replace(/\.html/g,function(){
                                 return '.en.html';
                             })
