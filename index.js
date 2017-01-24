@@ -57,7 +57,32 @@ Plugin.prototype.apply = function(compiler) {
             });
         });
     }else{
-        //读取js系列中文
+        //修改js指向
+        // compiler.plugin('emit', function(compilation, callback) {
+        //     var assets=compilation.getStats().compilation.assets;
+        //     _.each(assets,function(asset,k){
+             
+        //             var text=asset.source()
+        //             //修改js
+        //             //修改window.location.href指向
+        //             text=text.replace(/window.location.href.*\.html/,function(v){
+        //                 return v.replace(/\.html/,function(){
+        //                     return '.en.html';
+        //                 })
+        //             })
+        //             if(k.indexOf('opt')>-1){
+        //                 console.log(text);
+        //             }
+        //             console.log(k)
+        //             asset.source=function(){
+        //                 return text;
+        //             };
+                    
+              
+        //     })
+        //     callback();
+        // });
+        //收集
         compiler.plugin('emit', function(compilation, callback) {
             var assets=compilation.getStats().compilation.assets;
          
@@ -66,7 +91,8 @@ Plugin.prototype.apply = function(compiler) {
                 if(i18n.checkedFile(k)){
                      var ps=   k.split('.') ;
                         ps[ps.length]=ps[ps.length-1];
-                        ps[ps.length-2]="en";
+                        ps[ps.length-2]="en",
+                        be=ps[ps.length-1];
                     var text=i18n.createLocalFileByHtml(asset.source(),self.dit,function(v){
                         if(self.dit[v]){
                             return self.dit[v].replace(/["']/g,function(v){return "\\"+v});
@@ -74,14 +100,28 @@ Plugin.prototype.apply = function(compiler) {
                             return v;    
                         }
                     });
-                    text=text.replace(/src="index.js"/,function(){
-                        return 'src="index.en.js"'
-                    })
- 
-                    text=text.replace(/src="..\/common.js"/,function(){
-                        return 'src="../common.en.js"'
-                    })
+                    //修改html
+                    if(be=='html'){
+                        text=text.replace(/src="index.js"/,function(){
+                            return 'src="index.en.js"'
+                        })
+     
+                        text=text.replace(/src="..\/common.js"/,function(){
+                            return 'src="../common.en.js"'
+                        })
+                    }
+                    if(be=="js"){
+                        text=text.replace(/window.location.href.*\.html/,function(v){
+                            return v.replace(/\.html/g,function(){
+                                return '.en.html';
+                            })
+                        })
+                        if(k.indexOf('biddingmanage')>0){
+                            console.log(text)
+                        }
+                    }
 
+                
                     return {
                         fileName:ps.join('.'),
                         html:text
