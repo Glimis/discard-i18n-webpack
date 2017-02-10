@@ -109,6 +109,13 @@ Plugin.prototype.apply = function(compiler) {
                         text=text.replace(/src="..\/common.js"/,function(){
                             return 'src="../common.en.js"'
                         })
+
+                                                //href系列修改
+                        text=text.replace(/href=["'][^"']*/g,function(v){
+                            return v.replace(/\.html/,function(){
+                                return '.en.html';
+                            })
+                        })
                     }
                     if(be=="js"){
                         text=text.replace(/window.location.href.*\.html/g,function(v){
