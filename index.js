@@ -123,9 +123,12 @@ Plugin.prototype.apply = function(compiler) {
                                 return '.en.html';
                             })
                         })
-                        if(k.indexOf('biddingmanage')>0){
-                            console.log(text)
-                        }
+                        //js中href系列修改
+                        text=text.replace(/href=["'][^"']*/g,function(v){
+                            return v.replace(/\.html/,function(){
+                                return '.en.html';
+                            })
+                        })
                     }
 
                 
